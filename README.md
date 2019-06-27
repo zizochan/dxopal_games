@@ -14,3 +14,9 @@ Space key → Deceleration<br />
 
 
 
+# installation
+```
+brew install postgresql (for mac)
+
+bundle install
+```

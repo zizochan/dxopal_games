@@ -3,7 +3,8 @@ include DXOpal
 
 
 def enemy_new_position_x
-  rand(0..DISPLAY_WIDTH)
+  range = Range.new(-ENEMY_BODY_LENGTH, DISPLAY_WIDTH)
+  rand(range)
 end
 
 def enemy_new_position_y
@@ -64,21 +65,25 @@ def gameover
   view_gameover_message
 end
 
+# たまに速いのが混じってる
+def calc_enemy_speed(i)
+  i % 10 == 0 ? @enemy_speed * 3 : @enemy_speed
+end
 
 # config
-DEFAULT_PLAYER_SPEED = 4
+DEFAULT_PLAYER_SPEED = 3
 DEFAULT_PLAYER_SLOW_SPEED = 1
 DEFAULT_ENEMY_SPEED  = 1
 
-BODY_LENGTH = 5
-BODY_HEIGHT = 5
+BODY_LENGTH = 3
+BODY_HEIGHT = 3
 
 DISPLAY_WIDTH  = 640
 DISPLAY_HEIGHT = 480
 
-ENEMY_BODY_LENGTH = 10
-ENEMY_BODY_HEIGHT = 10
-START_ENEMY_COUNT = 300
+ENEMY_BODY_LENGTH = 15
+ENEMY_BODY_HEIGHT = 15
+START_ENEMY_COUNT = 100
 MAX_ENEMY_COUNT   = 2000
 
 PLAYER_WIDTH  = DISPLAY_WIDTH - BODY_LENGTH
@@ -102,6 +107,7 @@ player_y = PLAYER_HEIGHT - BODY_HEIGHT
 player = Sprite.new(player_x, player_y, Image.new(BODY_LENGTH, BODY_HEIGHT, C_WHITE))
 
 enemies = MAX_ENEMY_COUNT.times.map { create_enemy }
+enemy_speeds = MAX_ENEMY_COUNT.times.map { |i| calc_enemy_speed(i) }
 
 
 # main loop
@@ -129,7 +135,7 @@ Window.load_resources do
       next if i >= enemy_limt
 
       if @flag == FLAG_ON_PLAY
-        enemy.y += @enemy_speed
+        enemy.y += enemy_speeds[i]
         #enemy.x += rand(enemy_width_range)
 
         if enemy.y >= DISPLAY_HEIGHT
