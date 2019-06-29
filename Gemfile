@@ -49,6 +49,11 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'sqlite3', require: false
+
+  gem 'html2slim'
+  gem 'pry'
+  gem 'pry-byebug'
+  gem 'pry-rails'
 end
 
 group :test do
@@ -67,3 +72,6 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'dxopal'
+gem 'slim-rails'
+gem 'global'
+

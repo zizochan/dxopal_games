@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  root :to => 'game#index'
+  root :to => 'games#index'
 
-  get 'game/index'
-
-  get 'game/tamayoke'
-  get 'game/tamayoke_source'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  resources :games, only: [:index, :show] do
+    member do
+      get :source
+    end
+  end
 end

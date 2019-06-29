@@ -1,8 +1,8 @@
 require 'test_helper'
 
-class GameControllerTest < ActionDispatch::IntegrationTest
+class GamesControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get game_index_url
+    get games_index_url
     assert_response :success
   end
 

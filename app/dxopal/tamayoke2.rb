@@ -10,7 +10,7 @@ class Enemy
 
     reset
 
-    @speed  = choice_speed(@number)
+    @speed  = choice_speed
     @sprite = create_sprite
   end
 
@@ -25,8 +25,11 @@ class Enemy
   end
 
   def set_new_size
-    @width =  ENEMY_BODY_WIDTH
-    @height = ENEMY_BODY_HEIGHT
+    range = Range.new(0, ENEMY_BODY_WIDTH * 2)
+    additional_size = rand(range)
+
+    @width =  ENEMY_BODY_WIDTH  + additional_size
+    @height = ENEMY_BODY_HEIGHT + additional_size
   end
 
   def choice_new_x_position
@@ -35,16 +38,16 @@ class Enemy
   end
 
   def choice_new_y_position
-    0 - rand(ENEMY_BODY_HEIGHT..DISPLAY_HEIGHT)
+    range = Range.new(ENEMY_BODY_HEIGHT * 3, DISPLAY_HEIGHT)
+    0 - rand(range)
   end
 
-  # たまに速いのが混じってる
-  def choice_speed(number)
-    number % 10 == 0 ? DEFAULT_ENEMY_SPEED * 3 : DEFAULT_ENEMY_SPEED
+  def choice_speed
+    DEFAULT_ENEMY_SPEED
   end
 
   def create_sprite
-    Sprite.new(@x, @y, Image.new(@width, @height, C_RED))
+    Sprite.new(@x, @y, Image.new(@width, @height, C_WHITE))
   end
 
   def move
@@ -64,7 +67,6 @@ class Player
 
   def initialize
     set_default_position
-    set_speed
     @sprite = create_sprite
   end
 
@@ -74,17 +76,12 @@ class Player
   end
 
   def create_sprite
-    Sprite.new(@x, @y, Image.new(PLAYER_BODY_WIDTH, PLAYER_BODY_HEIGHT, C_WHITE))
-  end
-
-  def set_speed
-    @speed = DEFAULT_PLAYER_SPEED
-    @slow_speed = DEFAULT_PLAYER_SLOW_SPEED
+    Sprite.new(@x, @y, Image.new(PLAYER_BODY_WIDTH, PLAYER_BODY_HEIGHT, C_RED))
   end
 
   def move
-    @x += position_diff(Input.x)
-    @y += position_diff(Input.y)
+    @x = Input.mouse_x
+    @y = Input.mouse_y
 
     @x = @x.clamp(0, PLAYER_MOVE_WIDTH)
     @y = @y.clamp(0, PLAYER_MOVE_HEIGHT)
@@ -92,25 +89,11 @@ class Player
     @sprite.x = @x
     @sprite.y = @y
   end
-
-  def position_diff(input_value)
-    return 0 if input_value.to_i == 0
-
-    if with_slow_move?
-      input_value * @slow_speed
-    else
-      input_value * @speed
-    end
-  end
-
-  def with_slow_move?
-    Input.key_down?(K_SPACE)
-  end
 end
 
-# 1レベル上がるごとに10体追加
+# 1レベル上がるごとにX体ずつ追加
 def current_enemy_count
-  val = START_ENEMY_COUNT + level * 10
+  val = START_ENEMY_COUNT + level * ADD_ENEMY_COUNT_PER_LEVEL
   val.clamp(START_ENEMY_COUNT, MAX_ENEMY_COUNT)
 end
 
@@ -119,7 +102,7 @@ def view_gameover_message
   font = Font.new(font_size)
   x = (DISPLAY_WIDTH  - font_size * 6) / 2
   y = (DISPLAY_HEIGHT - font_size) / 2
-  Window.draw_font(x, y, "GAME OVER", font, color: C_YELLOW, z: 1)
+  Window.draw_font(x, y, "GAME OVER", font, color: C_RED, z: 1)
 end
 
 def view_score
@@ -128,7 +111,7 @@ def view_score
   x = font_size
   y = font_size
   message = "SCORE: " + level.to_s
-  Window.draw_font(x, y, message, font, color: C_WHITE)
+  Window.draw_font(x, y, message, font, color: C_RED)
 end
 
 def level
@@ -141,9 +124,7 @@ def gameover
 end
 
 # config
-DEFAULT_PLAYER_SPEED = 3
-DEFAULT_PLAYER_SLOW_SPEED = 1
-DEFAULT_ENEMY_SPEED  = 1
+DEFAULT_ENEMY_SPEED  = 0.5
 
 PLAYER_BODY_WIDTH  = 3
 PLAYER_BODY_HEIGHT = 3
@@ -155,6 +136,7 @@ ENEMY_BODY_WIDTH  = 15
 ENEMY_BODY_HEIGHT = 15
 START_ENEMY_COUNT = 100
 MAX_ENEMY_COUNT   = 2000
+ADD_ENEMY_COUNT_PER_LEVEL = 5
 
 PLAYER_MOVE_WIDTH  = DISPLAY_WIDTH  - PLAYER_BODY_WIDTH
 PLAYER_MOVE_HEIGHT = DISPLAY_HEIGHT - PLAYER_BODY_HEIGHT
@@ -169,7 +151,6 @@ FLAG_GAMEOVER = 1
 
 player  = Player.new
 enemies = MAX_ENEMY_COUNT.times.map { |i| Enemy.new(i) }
-
 
 # main loop
 Window.width  = DISPLAY_WIDTH

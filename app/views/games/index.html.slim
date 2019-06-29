@@ -1,0 +1,8 @@
+h1
+  | Dxopal Games
+
+div
+  ul
+    - @games.each do |game_id|
+      li
+        = link_to game_id, game_path(game_id), target: "_blank"

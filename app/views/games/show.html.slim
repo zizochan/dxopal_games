@@ -1,0 +1,33 @@
+- if @config["css"]
+  = stylesheet_link_tag @config["css"]
+
+h1
+  = @game_id
+
+script type="text/ruby"
+  | DXOpal.dump_error{ require_remote '#{@game_id}/source' }
+
+canvas id="dxopal-canvas" width=@config["width"] height=@config["height"] style="background-color:black;"
+br
+
+- if @config["description"]
+  div
+    = simple_format @config["description"]
+
+= button_tag "RESET", onclick: "window.location.reload();"
+
+hr
+
+div id="dxopal-errors"
+
+div
+  | Version
+  = @config["version"]
+
+  - if @config["source_code_url"]
+    br
+    = link_to "source code", @config["source_code_url"]
+
+hr
+
+= link_to "PageTop", games_path

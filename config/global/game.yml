@@ -1,0 +1,16 @@
+default:
+  tamayoke:
+    version: 1.0.1
+    width: 640
+    height: 480
+    source_code_url: "https://github.com/zizochan/dxopal_games/blob/master/app/dxopal/tamayoke.rb"
+    description: "・方向キー → プレイヤー移動<br>・スペースキー → 減速"
+    css:
+  tamayoke2:
+    version: 1.0.0
+    width: 640
+    height: 480
+    source_code_url: "https://github.com/zizochan/dxopal_games/blob/master/app/dxopal/tamayoke2.rb"
+    description: "マウスを動かした位置に自機も動きます。<br>降ってくる障害物をよけてください。"
+    css: "tamayoke2"
+
